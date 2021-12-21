@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>dotnet-streamcmdproxy-99E4F0C1-0ABD-45EA-BC47-1D71EE1A37F5</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+    <PackageReference Include="TwitchLib" Version="3.3.0" />
+    <PackageReference Include="ChatWell.YouTube" Version="1.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="TwitchLib" />
+    <None Remove="ChatWell.YouTube" />
+  </ItemGroup>
+</Project>
