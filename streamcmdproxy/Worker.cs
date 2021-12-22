@@ -1,4 +1,6 @@
-﻿using streamcmdproxy.Youtube;
+﻿using System.Collections.Generic;
+using System.Text;
+using streamcmdproxy.Youtube;
 using Google.Apis.YouTube.v3.Data;
 using ChatWell.YouTube;
 using TwitchLib.Client;
@@ -89,7 +91,7 @@ public class Worker : BackgroundService
         {
             _logger.LogInformation($"[YT] {DateTimeOffset.Now}: {liveChatMessage.AuthorDetails.DisplayName} - {liveChatMessage.Snippet.DisplayMessage}");
             if (liveChatMessage.Snippet.DisplayMessage.StartsWith("!"))
-                _twClient.SendMessage(_twChannel, liveChatMessage.Snippet.DisplayMessage);
+                HandleProxyMessage(liveChatMessage.Snippet.DisplayMessage);
         }
     }
 
@@ -120,5 +122,33 @@ public class Worker : BackgroundService
     }
 
     #endregion
+
+    private void HandleProxyMessage(string message)
+    {
+        if (message.StartsWith("!proxycommands"))
+        { // Display list of supported commands on Youtube
+            var sb = new StringBuilder();
+            sb.Append("Proxy commands: ");
+            foreach (var command in AllowedCommands.Instance.CommandList)
+            {
+                if (command == AllowedCommands.Instance.CommandList.FirstOrDefault())
+                    sb.Append(command);
+                else
+                    sb.Append($", {command}");
+            }
+            _ytclient.SendMessageAsync(sb.ToString());
+        }
+        else
+        { // Proxy commands from Youtube to Twitch
+            foreach (var command in AllowedCommands.Instance.CommandList)
+            {
+                if (message.StartsWith(command))
+                {
+                    _twClient.SendMessage(_twChannel, message);
+                    break;
+                }
+            }
+        }
+    }
 }
 
