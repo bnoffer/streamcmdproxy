@@ -15,5 +15,9 @@
   <ItemGroup>
     <None Remove="TwitchLib" />
     <None Remove="ChatWell.YouTube" />
+    <None Remove="Youtube\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Youtube\" />
   </ItemGroup>
 </Project>

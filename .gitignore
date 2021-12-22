@@ -403,3 +403,7 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
+
+# Prevent credentials from being committed
+client_secret.json
+appsettings.Development.json
