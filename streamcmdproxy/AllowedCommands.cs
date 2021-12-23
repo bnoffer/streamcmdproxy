@@ -37,6 +37,7 @@ namespace streamcmdproxy
 			_commandList.Add("!queue");
 			_commandList.Add("!link");
 			_commandList.Add("!request");
+			_commandList.Add("!bomb");
 		}
 	}
 }
