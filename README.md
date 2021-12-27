@@ -1,6 +1,6 @@
 ﻿# streamcmdproxy
 
-This is a .NET 6 worker application that allows you to proxy Twitch Chat Commands from Youtube Chat to Twitch Chat. This does not depend on any other third party services like Restream.
+This is a .NET 6 worker application that allows you to proxy Twitch Chat Commands from Youtube and/or Discord Chat to Twitch Chat. This does not depend on any other third party services like Restream.
 
 ## Status
 
@@ -16,7 +16,7 @@ Run the application.
 
 ## Acknowledgements
 
-This project uses [StephenMP/ChatWell.YouTube](https://github.com/StephenMP/ChatWell.YouTube) and [TwitchLib/TwitchLib](https://github.com/TwitchLib/TwitchLib) libraries to access Youtube and Twitch chat.
+This project uses [StephenMP/ChatWell.YouTube](https://github.com/StephenMP/ChatWell.YouTube), [discord-net/Discord.Net](https://github.com/discord-net/Discord.Net) and [TwitchLib/TwitchLib](https://github.com/TwitchLib/TwitchLib) libraries to access Youtube and Twitch chat.
 
 ## License
 

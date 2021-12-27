@@ -10,6 +10,8 @@ using TwitchLib.Client.Extensions;
 using TwitchLib.Client.Models;
 using TwitchLib.Communication.Clients;
 using TwitchLib.Communication.Models;
+using Discord;
+using Discord.WebSocket;
 
 namespace streamcmdproxy;
 
@@ -17,29 +19,55 @@ public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
     private readonly IConfiguration _configuration;
+
     private YouTubeChatClient _ytclient;
+
+    private DiscordSocketClient _dcClient;
+    private string _dcToken;
+
     private TwitchClient _twClient;
     private JoinedChannel _twChannel;
+
+    private bool _youTubeEnabled;
+    private bool _discordEnabled;
 
     public Worker(ILogger<Worker> logger, IConfiguration configuration)
     {
         _logger = logger;
         _configuration = configuration;
 
+        // -- CONFIG --
+        _youTubeEnabled = _configuration["EnableYoutube"].Equals("True");
+        _discordEnabled = _configuration["EnableDiscord"].Equals("True");
+
         // -- SETUP YOUTUBE --
-        var googleCredentialsFile = _configuration["GoogleCredentialsFile"];
-        var youtubeUserEmail = _configuration["YoutubeUserEmail"];
+        if (_youTubeEnabled)
+        {
+            var googleCredentialsFile = _configuration["GoogleCredentialsFile"];
+            var youtubeUserEmail = _configuration["YoutubeUserEmail"];
 
-        _ytclient = new YouTubeChatClient(new YoutubeAuthService(googleCredentialsFile, youtubeUserEmail));
-        _ytclient.OnConnected += OnYTConnected;
-        _ytclient.OnDisconnected += OnYTDisconnected;
-        _ytclient.OnMessageReceived += OnYTMessageReceivedAsync;
+            _ytclient = new YouTubeChatClient(new YoutubeAuthService(googleCredentialsFile, youtubeUserEmail));
+            _ytclient.OnConnected += OnYTConnected;
+            _ytclient.OnDisconnected += OnYTDisconnected;
+            _ytclient.OnMessageReceived += OnYTMessageReceivedAsync;
+        }
 
+        // -- SETUP DISCORD --
+        if (_discordEnabled)
+        {
+            _dcToken = _configuration["DiscordToken"];
+            _dcClient = new DiscordSocketClient();
+
+            _dcClient.Log += DcLogAsync;
+            _dcClient.Ready += DcReadyAsync;
+            _dcClient.MessageReceived += DcMessageReceivedAsync;
+        }
+
+        // -- SETUP TWITCH --
         var twitchUserName = _configuration["TwitchUserName"];
         var twitchAccessToken = _configuration["TwitchAccessToken"];
         var twitchChannel = _configuration["TwitchChannel"];
 
-        // -- SETUP TWITCH --
         ConnectionCredentials credentials = new ConnectionCredentials(twitchUserName, twitchAccessToken);
         var clientOptions = new ClientOptions
         {
@@ -58,7 +86,12 @@ public class Worker : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        await _ytclient.ConnectAsync();
+        if (_youTubeEnabled) await _ytclient.ConnectAsync();
+        if (_discordEnabled)
+        {
+            await _dcClient.LoginAsync(TokenType.Bot, _dcToken);
+            await _dcClient.StartAsync();
+        }
         _twClient.Connect();
 
         while (!stoppingToken.IsCancellationRequested)
@@ -66,13 +99,13 @@ public class Worker : BackgroundService
             //_logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
             await Task.Delay(1000, stoppingToken);
         }
-        
-        _ytclient.Disconnect();
+
+        if (_youTubeEnabled) _ytclient.Disconnect();
         _twClient.Disconnect();
     }
 
     #region Youtube
-
+    
     private void OnYTConnected(object sender, bool connected)
     {
         _logger.LogInformation("Youtube connected: {time}", DateTimeOffset.Now);
@@ -93,6 +126,36 @@ public class Worker : BackgroundService
             if (liveChatMessage.Snippet.DisplayMessage.StartsWith("!"))
                 HandleProxyMessage(liveChatMessage.Snippet.DisplayMessage);
         }
+    }
+
+    #endregion
+
+    #region Discord
+
+    private Task DcLogAsync(LogMessage log)
+    {
+        _logger.LogInformation(log.ToString());
+        return Task.CompletedTask;
+    }
+
+    // The Ready event indicates that the client has opened a
+    // connection and it is now safe to access the cache.
+    private Task DcReadyAsync()
+    {
+        _logger.LogInformation($"{_dcClient.CurrentUser} is connected!");
+
+        return Task.CompletedTask;
+    }
+
+    // This is not the recommended way to write a bot - consider
+    // reading over the Commands Framework sample.
+    private async Task DcMessageReceivedAsync(SocketMessage message)
+    {
+        // The bot should never respond to itself.
+        if (message.Author.Id == _dcClient.CurrentUser.Id)
+            return;
+
+        HandleProxyMessage(message.Content);
     }
 
     #endregion
