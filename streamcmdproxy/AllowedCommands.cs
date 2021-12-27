@@ -5,7 +5,7 @@ namespace streamcmdproxy
 {
 	public class AllowedCommands
 	{
-		private static object _syncRoot;
+		private static object _syncRoot = new object();
 		private static AllowedCommands _instance;
 
 		public static AllowedCommands Instance
