@@ -11,11 +11,13 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
     <PackageReference Include="TwitchLib" Version="3.3.0" />
     <PackageReference Include="ChatWell.YouTube" Version="1.0.0" />
+    <PackageReference Include="Discord.Net" Version="3.1.0" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="TwitchLib" />
     <None Remove="ChatWell.YouTube" />
     <None Remove="Youtube\" />
+    <None Remove="Discord.Net" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Youtube\" />

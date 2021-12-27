@@ -5,8 +5,12 @@
       "Microsoft.Hosting.Lifetime": "Information"
     }
   },
+  "EnableYoutube": false,
+  "EnableDiscord": false,
   "GoogleCredentialsFile": "",
   "YoutubeUserEmail": "",
+  "DiscordToken": "",
+  "DiscordChannelID": "",
   "TwitchUserName": "",
   "TwitchAccessToken": "",
   "TwitchChannel": ""
