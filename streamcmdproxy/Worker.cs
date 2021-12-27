@@ -24,6 +24,8 @@ public class Worker : BackgroundService
 
     private DiscordSocketClient _dcClient;
     private string _dcToken;
+    private ulong _dcChannelId;
+    private ISocketMessageChannel _dcChannel;
 
     private TwitchClient _twClient;
     private JoinedChannel _twChannel;
@@ -57,6 +59,9 @@ public class Worker : BackgroundService
         {
             _dcToken = _configuration["DiscordToken"];
             _dcClient = new DiscordSocketClient();
+
+            _dcChannelId = 0;
+            ulong.TryParse(_configuration["DiscordChannelID"], out _dcChannelId);
 
             _dcClient.Log += DcLogAsync;
             _dcClient.Ready += DcReadyAsync;
@@ -155,6 +160,11 @@ public class Worker : BackgroundService
         if (message.Author.Id == _dcClient.CurrentUser.Id)
             return;
 
+        // Ignore messages sent from other channels
+        if (message.Channel.Id != _dcChannelId)
+            return;
+
+        _dcChannel = message.Channel;
         HandleProxyMessage(message.Content);
     }
 
@@ -199,7 +209,8 @@ public class Worker : BackgroundService
                 else
                     sb.Append($", {command}");
             }
-            _ytclient.SendMessageAsync(sb.ToString());
+            if (_youTubeEnabled) _ytclient.SendMessageAsync(sb.ToString());
+            if (_discordEnabled && _dcChannel != null) _dcChannel.SendMessageAsync(sb.ToString());
         }
         else
         { // Proxy commands from Youtube to Twitch
