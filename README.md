@@ -4,7 +4,15 @@ This is a .NET 6 worker application that allows you to proxy Twitch Chat Command
 
 ## Status
 
-Work in progress.
+Work in progress:
+
+Connect to Twitch:  (-) | Works, but authentication has to be done manually.
+
+Connect to YouTube: (-) | Works, but the bot runs into a rate limit.
+
+Connect to Discord: (√)
+
+Documentation:      ( )
 
 ## Setup
 
