@@ -1,0 +1,3 @@
+[submodule "ChatWell.YouTube"]
+	path = ChatWell.YouTube
+	url = git@github.com:bnoffer/ChatWell.YouTube.git
