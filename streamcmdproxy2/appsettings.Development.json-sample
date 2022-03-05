@@ -1,0 +1,25 @@
+﻿{
+  "DetailedErrors": true,
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "MongoDB": {
+    "ConnectionString": "mongodb://user:password@127.0.0.1:27017/dbname",
+    "DatabaseName": "dbname"
+  },
+  "EnableYoutube": true,
+  "EnableDiscord": true,
+  "GoogleCredentialsFile": "client_secret.json",
+  "YoutubeUserEmail": "",
+  "DiscordToken": "",
+  "DiscordChannelID": "",
+  "TwitchUserName": "",
+  "TwitchAccessToken": "",
+  "TwitchChannel": "",
+  "TwitchClientId": "",
+  "TwitchClientSecret": ""
+}
+

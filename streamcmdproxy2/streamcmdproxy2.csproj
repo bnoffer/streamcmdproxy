@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="MongoDB.Bson" />
+    <None Remove="MongoDB.Driver" />
+    <None Remove="MongoDB.Driver.GridFS" />
+    <None Remove="Newtonsoft.Json" />
+    <None Remove="Helpers\" />
+    <None Remove="Helpers\Events\" />
+    <None Remove="Youtube\" />
+    <None Remove="Discord.Net" />
+    <None Remove="TwitchLib" />
+    <None Remove="Google.Apis.YouTube.v3" />
+    <None Remove="Owin.Security.Providers.Twitch" />
+    <None Remove="AspNet.Security.OAuth.Twitch" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Bson" Version="2.14.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.14.1" />
+    <PackageReference Include="MongoDB.Driver.GridFS" Version="2.14.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="Discord.Net" Version="3.4.0" />
+    <PackageReference Include="TwitchLib" Version="3.3.0" />
+    <PackageReference Include="Google.Apis.YouTube.v3" Version="1.36.1.1226" />
+    <PackageReference Include="AspNet.Security.OAuth.Twitch" Version="6.0.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Condition="'$(ExcludeConfigFilesFromBuildOutput)'!='true'" Update="appsettings.Development.json-sample">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Helpers\" />
+    <Folder Include="Helpers\Events\" />
+    <Folder Include="Youtube\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChatWell.YouTube\ChatWell.YouTube\ChatWell.YouTube.csproj">
+      <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
+    </ProjectReference>
+  </ItemGroup>
+</Project>
